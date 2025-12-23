@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Restaurant - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1A1A1A 0%, #2C2C2C 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .person-badge {
+            background: rgba(255,107,53,0.2);
+            border: 2px solid #FF6B35;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .page-subtitle {
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .search-section {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.2rem 3.5rem 1.2rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 0 4px rgba(255,107,53,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #999;
+            pointer-events: none;
+        }
+
+        .restaurants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .restaurant-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .restaurant-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B35, #F7931E);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255,107,53,0.3);
+            background: rgba(255,107,53,0.15);
+        }
+
+        .restaurant-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .restaurant-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .restaurant-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .restaurant-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ccc;
+            font-size: 0.95rem;
+        }
+
+        .info-icon {
+            font-size: 1.2rem;
+            color: #FF6B35;
+        }
+
+        .btn-select {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.5);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #999;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .restaurants-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">YALLAORDER</div>
+            <div class="person-badge" id="personBadge">Loading...</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Choose a Restaurant</h1>
+            <p class="page-subtitle" id="subtitle">Select any restaurant for your order</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput" 
+                    placeholder="Search restaurants..."
+                    oninput="handleSearch()">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <div id="restaurantsContainer">
+            <div class="loading">Loading restaurants...</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        let allRestaurants = [];
+        let groupOrderData = null;
+        let searchTimeout;
+
+        function loadGroupOrderData() {
+            const data = sessionStorage.getItem('groupOrderData');
+            if (!data) {
+                alert('No group order found. Redirecting...');
+                window.location.href = 'group-order-setup.html';
+                return;
+            }
+
+            groupOrderData = JSON.parse(data);
+            const currentPerson = groupOrderData.currentPerson;
+            const memberName = groupOrderData.members[currentPerson - 1];
+
+            document.getElementById('personBadge').textContent = `${memberName} (${currentPerson}/${groupOrderData.numPeople})`;
+            document.getElementById('subtitle').textContent = `${memberName}, select any restaurant for your order`;
+        }
+
+        async function loadRestaurants() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/restaurants/`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch restaurants');
+                }
+
+                const data = await response.json();
+                allRestaurants = data.restaurants;
+                
+                displayRestaurants(allRestaurants);
+                
+            } catch (error) {
+                console.error('Error loading restaurants:', error);
+                document.getElementById('restaurantsContainer').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <div style="font-size: 1.3rem; margin-bottom: 0.5rem;">Failed to load restaurants</div>
+                        <div style="color: #666;">Please check if the server is running</div>
+                    </div>
+                `;
+            }
+        }
+
+        function displayRestaurants(restaurants) {
+            const container = document.getElementById('restaurantsContainer');
+            
+            if (restaurants.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🍽️</div>
+                        <div style="font-size: 1.3rem; margin-bottom: 0.5rem;">No restaurants found</div>
+                        <div style="color: #666;">Check back soon for new restaurants!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'restaurants-grid';
+            
+            restaurants.forEach(restaurant => {
+                const card = document.createElement('div');
+                card.className = 'restaurant-card';
+                
+                card.innerHTML = `
+                    <div class="restaurant-icon">🍽️</div>
+                    <div class="restaurant-name">${restaurant.restaurant_name}</div>
+                    <div class="restaurant-info">
+                        <div class="info-row">
+                            <span class="info-icon">📍</span>
+                            <span>${restaurant.address}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-icon">📞</span>
+                            <span>${restaurant.restaurant_phone}</span>
+                        </div>
+                        ${restaurant.hotline && restaurant.hotline !== 'N/A' ? `
+                            <div class="info-row">
+                                <span class="info-icon">☎️</span>
+                                <span>Hotline: ${restaurant.hotline}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <button class="btn-select" onclick="selectRestaurant(${restaurant.id})">
+                        Select Restaurant
+                    </button>
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(grid);
+        }
+
+        function handleSearch() {
+            clearTimeout(searchTimeout);
+            
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            searchTimeout = setTimeout(() => {
+                if (searchTerm === '') {
+                    displayRestaurants(allRestaurants);
+                } else {
+                    const filtered = allRestaurants.filter(restaurant => 
+                        restaurant.restaurant_name.toLowerCase().includes(searchTerm)
+                    );
+                    displayRestaurants(filtered);
+                }
+            }, 300);
+        }
+
+        function selectRestaurant(restaurantId) {
+            // Save selected restaurant for current person
+            sessionStorage.setItem('currentRestaurantId', restaurantId);
+            
+            // Redirect to menu page
+            window.location.href = `group-restaurant-menu.html?id=${restaurantId}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadGroupOrderData();
+            loadRestaurants();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1A1A1A 0%, #2C2C2C 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #FF6B35;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #ccc;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .order-summary {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            color: #ccc;
+        }
+
+        .summary-row.total {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255,107,53,0.3);
+            margin-top: 1rem;
+        }
+
+        .summary-row.total .amount {
+            color: #FF6B35;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,107,53,0.5);
+        }
+
+        .btn-submit:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #fca5a5;
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #6ee7b7;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-section, .order-summary {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">YALLAORDER</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Checkout</h1>
+            <p class="page-subtitle">Complete your group order</p>
+        </div>
+
+        <div id="alertBox" class="alert"></div>
+
+        <form id="checkoutForm" onsubmit="handleSubmit(event)">
+            <div class="form-section">
+                <div class="section-title">📞 Contact Information</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Primary Contact Name</label>
+                    <input 
+                        type="text" 
+                        class="form-input" 
+                        id="customerName"
+                        placeholder="Enter your name"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Primary Phone Number</label>
+                    <input 
+                        type="tel" 
+                        class="form-input" 
+                        id="phone"
+                        placeholder="01xxxxxxxxx"
+                        pattern="[0-9]{11}"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Temporary Phone (Optional)</label>
+                    <input 
+                        type="tel" 
+                        class="form-input" 
+                        id="tempPhone"
+                        placeholder="Alternative contact number"
+                        pattern="[0-9]{11}">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">📍 Delivery Information</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Delivery Address</label>
+                    <textarea 
+                        class="form-input" 
+                        id="deliveryLocation"
+                        placeholder="Enter full delivery address"
+                        rows="3"
+                        required></textarea>
+                </div>
+            </div>
+
+            <div class="order-summary">
+                <div class="section-title">💰 Order Summary</div>
+                <div id="summaryContent"></div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                Confirm Group Order
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        let groupOrderData = null;
+        const TAX_RATE = 0.14;
+        const DELIVERY_FEE = 20;
+
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert ${type} show`;
+            
+            setTimeout(() => {
+                alertBox.className = 'alert';
+            }, 5000);
+        }
+
+        function loadGroupOrderData() {
+            const data = sessionStorage.getItem('groupOrderData');
+            if (!data) {
+                alert('No group order found. Redirecting...');
+                window.location.href = 'group-order-setup.html';
+                return;
+            }
+
+            groupOrderData = JSON.parse(data);
+            displaySummary();
+
+            // Pre-fill user data if available
+            const user = sessionStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                document.getElementById('customerName').value = `${userData.first_name} ${userData.last_name}`;
+                document.getElementById('phone').value = userData.phone;
+            }
+        }
+
+        function displaySummary() {
+            const container = document.getElementById('summaryContent');
+            
+            const subtotal = Object.values(groupOrderData.orders).reduce((sum, order) => {
+                return sum + order.items.reduce((itemSum, item) => itemSum + item.subtotal, 0);
+            }, 0);
+            
+            const tax = subtotal * TAX_RATE;
+            const total = subtotal + tax + DELIVERY_FEE;
+
+            const totalItems = Object.values(groupOrderData.orders).reduce((sum, order) => {
+                return sum + order.items.reduce((itemSum, item) => itemSum + item.quantity, 0);
+            }, 0);
+
+            container.innerHTML = `
+                <div class="summary-row">
+                    <span>Total Items:</span>
+                    <span>${totalItems}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Number of People:</span>
+                    <span>${groupOrderData.numPeople}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>${subtotal.toFixed(2)} EGP</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (14%):</span>
+                    <span>${tax.toFixed(2)} EGP</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee:</span>
+                    <span>${DELIVERY_FEE.toFixed(2)} EGP</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Grand Total:</span>
+                    <span class="amount">${total.toFixed(2)} EGP</span>
+                </div>
+            `;
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            try {
+                const customerName = document.getElementById('customerName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const tempPhone = document.getElementById('tempPhone').value.trim();
+                const deliveryLocation = document.getElementById('deliveryLocation').value.trim();
+
+                // Calculate totals
+                const allItems = [];
+                Object.values(groupOrderData.orders).forEach(order => {
+                    allItems.push(...order.items);
+                });
+
+                const subtotal = allItems.reduce((sum, item) => sum + item.subtotal, 0);
+                const tax = subtotal * TAX_RATE;
+                const total = subtotal + tax + DELIVERY_FEE;
+
+                // Create order payload
+                const orderData = {
+                    order_type: 'group',
+                    customer_name: customerName,
+                    phone: phone,
+                    temp_phone: tempPhone || null,
+                    delivery_location: deliveryLocation,
+                    delivery_fee: DELIVERY_FEE,
+                    tax: tax,
+                    total: total,
+                    num_people: groupOrderData.numPeople,
+                    members: groupOrderData.members,
+                    items: allItems
+                };
+
+                console.log('Submitting order:', orderData);
+
+                const response = await fetch(`${API_BASE_URL}/group_orders/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create order');
+                }
+
+                const result = await response.json();
+                console.log('Order created:', result);
+
+                showAlert('Order placed successfully!', 'success');
+
+                // Clear group order data
+                sessionStorage.removeItem('groupOrderData');
+
+                // Redirect to confirmation page
+                setTimeout(() => {
+                    window.location.href = `order_confirmation.html?order_id=${result.order_id}`;
+                }, 1500);
+
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showAlert('Failed to place order. Please try again.', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Confirm Group Order';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadGroupOrderData);
+    </script>
+</body>
+</html>

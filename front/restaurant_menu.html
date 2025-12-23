@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Menu - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #FF6B35;
+            --secondary-orange: #F7931E;
+            --dark-bg: #1A1A1A;
+            --darker-bg: #2C2C2C;
+            --glass-bg: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.1);
+            --text-primary: #fff;
+            --text-secondary: #ccc;
+            --text-muted: #aaa;
+            --border-radius-sm: 10px;
+            --border-radius-lg: 20px;
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        .back-btn {
+            padding: 0.7rem 1.5rem;
+            background: var(--glass-bg);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+            border: 1px solid var(--glass-border);
+        }
+
+        .back-btn:hover {
+            background: rgba(255,107,53,0.2);
+            transform: translateX(-5px);
+            border-color: var(--primary-orange);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .restaurant-header {
+            background: var(--glass-bg);
+            border-radius: var(--border-radius-lg);
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .restaurant-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .restaurant-details {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .menu-title {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .item-count {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .menu-item-card {
+            background: var(--glass-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            transition: all var(--transition-speed);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255,107,53,0.3);
+            border-color: var(--primary-orange);
+        }
+
+        .item-image {
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-image-placeholder {
+            font-size: 4rem;
+        }
+
+        .item-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .item-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .item-price {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary-orange);
+        }
+
+        .btn-add {
+            padding: 0.7rem 1.8rem;
+            border-radius: var(--border-radius-sm);
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--text-primary);
+            transition: all var(--transition-speed);
+            font-size: 1rem;
+        }
+
+        .btn-add:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.4);
+        }
+
+        .btn-add:active {
+            transform: scale(0.98);
+        }
+
+        .loading, .empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .cart-fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(255, 107, 53, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            transition: all 0.3s;
+            z-index: 40;
+        }
+
+        .cart-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 50px rgba(255, 107, 53, 0.6);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #E63946;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 150;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            background: linear-gradient(to bottom, #1a1a1a, #2c2c2c);
+            z-index: 200;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .cart-sidebar.active {
+            transform: translateX(0);
+        }
+
+        .cart-header {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .cart-header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-header-icon {
+            font-size: 2rem;
+        }
+
+        .cart-header-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+
+        .cart-header-count {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .cart-close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .cart-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .cart-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+        }
+
+        .cart-empty-icon {
+            font-size: 5rem;
+            opacity: 0.5;
+            margin-bottom: 1rem;
+        }
+
+        .cart-empty-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .cart-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .cart-item:hover {
+            border-color: var(--primary-orange);
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .cart-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-price {
+            color: var(--primary-orange);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .cart-item-delete {
+            background: rgba(230, 57, 70, 0.1);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #E63946;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-item-delete:hover {
+            background: #E63946;
+            color: white;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-qty-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-qty-btn:hover:not(:disabled) {
+            background: var(--primary-orange);
+        }
+
+        .cart-qty-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .cart-qty {
+            font-size: 1.2rem;
+            font-weight: 700;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .cart-item-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-left: auto;
+        }
+
+        .cart-footer {
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+        }
+
+        .cart-clear-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: transparent;
+            border: 1px solid #E63946;
+            border-radius: 10px;
+            color: #E63946;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .cart-clear-btn:hover {
+            background: rgba(230, 57, 70, 0.1);
+        }
+
+        .cart-summary {
+            margin-bottom: 1.5rem;
+        }
+
+        .cart-summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+        }
+
+        .cart-summary-row.total {
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .cart-checkout-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cart-checkout-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.5);
+        }
+
+        .cart-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .cart-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary-orange);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            font-weight: 600;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .restaurant-header {
+                padding: 1.5rem;
+            }
+
+            .restaurant-title {
+                font-size: 2rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .menu-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .cart-sidebar {
+                max-width: 100%;
+            }
+
+            .cart-fab {
+                bottom: 1.5rem;
+                right: 1.5rem;
+                width: 60px;
+                height: 60px;
+            }
+
+            .notification {
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="brand">YALLAORDER</div>
+        <a href="restaurants.html" class="back-btn">← Back to Restaurants</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="restaurant-header" id="restaurantHeader">
+        <div class="loading">Loading restaurant</div>
+    </div>
+
+    <div class="menu-header">
+        <h2 class="menu-title">Menu</h2>
+        <div class="item-count" id="itemCount">0 Items</div>
+    </div>
+
+    <div id="menuContainer">
+        <div class="loading">Loading menu</div>
+    </div>
+</div>
+
+<button class="cart-fab" id="cartFab" onclick="openCart()">
+    🛒
+    <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+</button>
+
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <div class="cart-header-content">
+            <span class="cart-header-icon">🛒</span>
+            <div>
+                <div class="cart-header-title">Your Cart</div>
+                <div class="cart-header-count" id="cartHeaderCount">0 items</div>
+            </div>
+        </div>
+        <button class="cart-close-btn" onclick="closeCart()">×</button>
+    </div>
+
+    <div class="cart-body" id="cartBody">
+        <div class="cart-loading">
+            <div class="cart-spinner"></div>
+        </div>
+    </div>
+
+    <div class="cart-footer" id="cartFooter" style="display: none;">
+        <button class="cart-clear-btn" onclick="clearCart()">Clear Cart</button>
+        
+        <div class="cart-summary">
+            <div class="cart-summary-row">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">0.00 EGP</span>
+            </div>
+            <div class="cart-summary-row">
+                <span>Tax (14%)</span>
+                <span id="cartTax">0.00 EGP</span>
+            </div>
+            <div class="cart-summary-row">
+                <span>Delivery Fee</span>
+                <span id="cartDelivery">0.00 EGP</span>
+            </div>
+            <div class="cart-summary-row total">
+                <span>Total</span>
+                <span id="cartTotal">0.00 EGP</span>
+            </div>
+        </div>
+
+        <button class="cart-checkout-btn" onclick="checkout()">
+            Proceed to Checkout
+        </button>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = "http://localhost:5000";
+
+    function getCartUUID() {
+        let cartUUID = localStorage.getItem('cart_uuid');
+        if (!cartUUID) {
+            cartUUID = 'cart_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('cart_uuid', cartUUID);
+        }
+        return cartUUID;
+    }
+
+    function getRestaurantIdFromURL() {
+        return new URLSearchParams(window.location.search).get("id");
+    }
+
+    function showError(elementId, message) {
+        document.getElementById(elementId).innerHTML = 
+            `<div class='empty'>${message}</div>`;
+    }
+
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    async function loadRestaurantMenu() {
+        const restaurantId = getRestaurantIdFromURL();
+
+        if (!restaurantId) {
+            window.location.href = "restaurants.html";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/restaurant-menu/${restaurantId}`);
+            
+            if (!response.ok) {
+                throw new Error("Failed to load restaurant data");
+            }
+
+            const data = await response.json();
+            renderRestaurant(data.restaurant);
+            renderMenu(data.menu_items, data.total_items);
+
+        } catch (err) {
+            console.error("Error loading restaurant menu:", err);
+            showError("restaurantHeader", "Failed to load restaurant information");
+            showError("menuContainer", "Failed to load menu items");
+        }
+    }
+
+    function renderRestaurant(restaurant) {
+        document.getElementById("restaurantHeader").innerHTML = `
+            <h1 class="restaurant-title">${restaurant.restaurant_name}</h1>
+            <div class="restaurant-details">
+                <div class="detail-item">
+                    <span>📍</span>
+                    <span>${restaurant.address}</span>
+                </div>
+                <div class="detail-item">
+                    <span>📞</span>
+                    <span>${restaurant.restaurant_phone}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderMenu(items, total) {
+        document.getElementById("itemCount").textContent = `${total} Item${total !== 1 ? 's' : ''}`;
+
+        if (items.length === 0) {
+            showError("menuContainer", "No menu items available");
+            return;
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "menu-grid";
+
+        items.forEach(item => {
+            const card = createMenuItemCard(item);
+            grid.appendChild(card);
+        });
+
+        document.getElementById("menuContainer").innerHTML = "";
+        document.getElementById("menuContainer").appendChild(grid);
+    }
+
+    function createMenuItemCard(item) {
+        const card = document.createElement("div");
+        card.className = "menu-item-card";
+
+        const imageContent = item.image 
+            ? `<img src="${item.image}" alt="${item.name}">` 
+            : `<div class="item-image-placeholder">🍽️</div>`;
+
+        card.innerHTML = `
+            <div class="item-image">
+                ${imageContent}
+            </div>
+            <div class="item-content">
+                <div class="item-name">${item.name}</div>
+                <div class="item-description">${item.description || "No description available"}</div>
+                <div class="item-footer">
+                    <div class="item-price">${item.price.toFixed(2)} EGP</div>
+                    <button class="btn-add"
+                        data-menu-id="${item.id}"
+                        data-restaurant-id="${item.restaurant_id}"
+                        data-name="${item.name}"
+                        data-price="${item.price}">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        `;
+
+        const addButton = card.querySelector('.btn-add');
+        addButton.addEventListener('click', () => {
+            addToCart(item.id, item.restaurant_id, item.name, item.price);
+        });
+
+        return card;
+    }
+
+    async function addToCart(menuItemId, restaurantId, name, price) {
+        try {
+            const cartUUID = getCartUUID();
+            
+            const response = await fetch(`${API_BASE_URL}/cart/add`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cart_uuid: cartUUID,
+                    menu_item_id: menuItemId,
+                    restaurant_id: restaurantId,
+                    item_name: name,
+                    price: price,
+                    quantity: 1
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || "Failed to add item");
+            }
+
+            await updateCartCount();
+            showNotification(`✅ ${name} added to cart!`);
+
+        } catch (err) {
+            console.error("Add to cart error:", err);
+            alert("❌ Failed to add item to cart: " + err.message);
+        }
+    }
+
+    async function updateCartCount() {
+        try {
+            const cartUUID = getCartUUID();
+            
+            const res = await fetch(`${API_BASE_URL}/cart/count`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cart_uuid: cartUUID
+                })
+            });
+            
+            const data = await res.json();
+
+            if (data.success) {
+                const count = data.count;
+                const badge = document.getElementById('cartBadge');
+                
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        } catch (err) {
+            console.error("Failed to update cart count", err);
+        }
+    }
+
+    async function loadCart() {
+        const cartBody = document.getElementById('cartBody');
+        const cartFooter = document.getElementById('cartFooter');
+        
+        cartBody.innerHTML = '<div class="cart-loading"><div class="cart-spinner"></div></div>';
+
+        try {
+            const cartUUID = getCartUUID();
+            
+            const response = await fetch(`${API_BASE_URL}/cart/view`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cart_uuid: cartUUID
+                })
+            });
+
+            const data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.error || "Failed to load cart");
+            }
+
+            const items = data.items || [];
+            document.getElementById('cartHeaderCount').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+
+            if (items.length === 0) {
+                cartBody.innerHTML = `
+                    <div class="cart-empty">
+                        <div class="cart-empty-icon">🛒</div>
+                        <div class="cart-empty-text">Your cart is empty</div>
+                        <p style="margin-top: 0.5rem; color: var(--text-muted);">Add items to get started!</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+            } else {
+                renderCartItems(items);
+                await loadCartSummary();
+                cartFooter.style.display = 'block';
+            }
+
+        } catch (err) {
+            console.error("Error loading cart:", err);
+            cartBody.innerHTML = '<div class="empty">Failed to load cart</div>';
+        }
+    }
+
+    function renderCartItems(items) {
+        const cartBody = document.getElementById('cartBody');
+        
+        cartBody.innerHTML = items.map(item => `
+            <div class="cart-item">
+                <div class="cart-item-header">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.item_name}</div>
+                        <div class="cart-item-price">${item.price.toFixed(2)} EGP</div>
+                    </div>
+                    <button class="cart-item-delete" onclick="removeFromCart(${item.id})">
+                        🗑️
+                    </button>
+                </div>
+                <div class="cart-item-controls">
+                    <button class="cart-qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity - 1})" 
+                        ${item.quantity <= 1 ? 'disabled' : ''}>
+                        −
+                    </button>
+                    <div class="cart-qty">${item.quantity}</div>
+                    <button class="cart-qty-btn" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">
+                        +
+                    </button>
+                    <div class="cart-item-total">${(item.price * item.quantity).toFixed(2)} EGP</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function loadCartSummary() {
+        try {
+            const cartUUID = getCartUUID();
+            
+            const response = await fetch(`${API_BASE_URL}/cart/summary`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cart_uuid: cartUUID
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('cartSubtotal').textContent = `${data.subtotal.toFixed(2)} EGP`;
+                document.getElementById('cartTax').textContent = `${data.tax.toFixed(2)} EGP`;
+                document.getElementById('cartDelivery').textContent = `${data.delivery_fee.toFixed(2)} EGP`;
+                document.getElementById('cartTotal').textContent = `${data.total.toFixed(2)} EGP`;
+            }
+        } catch (err) {
+            console.error("Failed to load cart summary", err);
+        }
+    }
+
+    async function updateQuantity(cartItemId, newQuantity) {
+    if (newQuantity < 1) return;
+
+    try {
+        const cartUUID = getCartUUID();
+        
+        const response = await fetch(`${API_BASE_URL}/cart/update`, {
+            method: "PUT",  // ✅ Changed to PUT
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cart_uuid: cartUUID,
+                cart_item_id: cartItemId,
+                quantity: newQuantity
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || "Failed to update quantity");
+        }
+
+        await loadCart();
+        await updateCartCount();
+
+    } catch (err) {
+        console.error("Update quantity error:", err);
+        alert("Failed to update quantity");
+    }
+}
+
+async function removeFromCart(cartItemId) {
+    if (!confirm("Remove this item from cart?")) return;
+
+    try {
+        const cartUUID = getCartUUID();
+        
+        const response = await fetch(`${API_BASE_URL}/cart/remove`, {
+            method: "DELETE",  // ✅ Changed to DELETE
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cart_uuid: cartUUID,
+                cart_item_id: cartItemId
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || "Failed to remove item");
+        }
+
+        await loadCart();
+        await updateCartCount();
+        showNotification("Item removed from cart");
+
+    } catch (err) {
+        console.error("Remove from cart error:", err);
+        alert("Failed to remove item");
+    }
+}
+
+async function clearCart() {
+    if (!confirm("Clear all items from cart?")) return;
+
+    try {
+        const cartUUID = getCartUUID();
+        
+        const response = await fetch(`${API_BASE_URL}/cart/clear`, {
+            method: "DELETE",  // ✅ Changed to DELETE
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                cart_uuid: cartUUID
+            })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.error || "Failed to clear cart");
+        }
+
+        await loadCart();
+        await updateCartCount();
+        showNotification("Cart cleared");
+
+    } catch (err) {
+        console.error("Clear cart error:", err);
+        alert("Failed to clear cart");
+    }
+}
+
+    function openCart() {
+        document.getElementById('cartOverlay').classList.add('active');
+        document.getElementById('cartSidebar').classList.add('active');
+        loadCart();
+    }
+
+    function closeCart() {
+        document.getElementById('cartOverlay').classList.remove('active');
+        document.getElementById('cartSidebar').classList.remove('active');
+    }
+
+    function checkout() {
+        window.location.href = 'checkout.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadRestaurantMenu();
+        updateCartCount();
+    });
+</script>
+
+</body>
+</html>

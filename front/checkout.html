@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #FF6B35;
+            --secondary-orange: #F7931E;
+            --dark-bg: #1A1A1A;
+            --darker-bg: #2C2C2C;
+            --glass-bg: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.1);
+            --text-primary: #fff;
+            --text-secondary: #ccc;
+            --text-muted: #999;
+            --success-green: #10b981;
+            --error-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-btn {
+            padding: 0.7rem 1.5rem;
+            background: var(--glass-bg);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 1px solid var(--glass-border);
+        }
+
+        .back-btn:hover {
+            background: rgba(255,107,53,0.2);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .checkout-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .form-label.required::after {
+            content: ' *';
+            color: var(--error-red);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--glass-border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .form-input.error {
+            border-color: var(--error-red);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .optional-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        .order-summary {
+            position: sticky;
+            top: 100px;
+        }
+
+        .summary-items {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-qty {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+
+        .summary-divider {
+            height: 1px;
+            background: var(--glass-border);
+            margin: 1.5rem 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.7rem 0;
+            color: var(--text-secondary);
+        }
+
+        .summary-row.total {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255,107,53,0.3);
+        }
+
+        .summary-row.total .amount {
+            color: var(--primary-orange);
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-confirm:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.5);
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: var(--darker-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid var(--primary-orange);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--primary-orange);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtext {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .btn-browse {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-browse:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.5);
+        }
+
+        @media (max-width: 968px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-summary {
+                position: static;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <div class="loading-text">Processing your order...</div>
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="brand">YALLAORDER</div>
+        <a href="restaurants.html" class="back-btn">← Back to Restaurants</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Checkout</h1>
+        <p class="page-subtitle">Complete your order details</p>
+    </div>
+
+    <div id="checkoutContent"></div>
+</div>
+
+<script>
+    const API_BASE_URL = "http://localhost:5000";
+
+    function getCartUUID() {
+        let cartUUID = localStorage.getItem('cart_uuid');
+        if (!cartUUID) {
+            cartUUID = 'cart_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('cart_uuid', cartUUID);
+        }
+        return cartUUID;
+    }
+
+    async function loadCheckout() {
+        try {
+            const cartUUID = getCartUUID();
+            
+            const [cartResponse, summaryResponse] = await Promise.all([
+                fetch(`${API_BASE_URL}/cart/view`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cart_uuid: cartUUID })
+                }),
+                fetch(`${API_BASE_URL}/cart/summary`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cart_uuid: cartUUID })
+                })
+            ]);
+
+            const cartData = await cartResponse.json();
+            const summaryData = await summaryResponse.json();
+
+            if (!cartData.success || !summaryData.success) {
+                throw new Error("Failed to load cart data");
+            }
+
+            const items = cartData.items || [];
+
+            if (items.length === 0) {
+                renderEmptyCart();
+            } else {
+                renderCheckout(items, summaryData);
+            }
+
+        } catch (err) {
+            console.error("Error loading checkout:", err);
+            document.getElementById('checkoutContent').innerHTML = `
+                <div class="empty-cart">
+                    <div class="empty-icon">⚠️</div>
+                    <div class="empty-text">Failed to load checkout</div>
+                    <div class="empty-subtext">Please try again</div>
+                </div>
+            `;
+        }
+    }
+
+    function renderEmptyCart() {
+        document.getElementById('checkoutContent').innerHTML = `
+            <div class="empty-cart">
+                <div class="empty-icon">🛒</div>
+                <div class="empty-text">Your cart is empty</div>
+                <div class="empty-subtext">Add items to your cart before checking out</div>
+                <a href="restaurants.html" class="btn-browse">Browse Restaurants</a>
+            </div>
+        `;
+    }
+
+    function renderCheckout(items, summary) {
+        const itemsHTML = items.map(item => `
+            <div class="summary-item">
+                <div class="item-details">
+                    <div class="item-name">${item.item_name}</div>
+                    <div class="item-qty">Qty: ${item.quantity} × ${item.price.toFixed(2)} EGP</div>
+                </div>
+                <div class="item-price">${(item.price * item.quantity).toFixed(2)} EGP</div>
+            </div>
+        `).join('');
+
+        document.getElementById('checkoutContent').innerHTML = `
+            <div class="checkout-grid">
+                <div class="checkout-section">
+                    <h2 class="section-title">
+                        <span class="section-icon">📋</span>
+                        Customer Information
+                    </h2>
+                    
+                    <form id="checkoutForm" onsubmit="handleSubmit(event)">
+                        <div class="form-group">
+                            <label class="form-label required">First Name</label>
+                            <input 
+                                type="text" 
+                                class="form-input" 
+                                id="firstName"
+                                placeholder="Enter your first name"
+                                required>
+                            <div class="error-message" id="firstNameError">Please enter your first name</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Last Name</label>
+                            <input 
+                                type="text" 
+                                class="form-input" 
+                                id="lastName"
+                                placeholder="Enter your last name"
+                                required>
+                            <div class="error-message" id="lastNameError">Please enter your last name</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Phone Number</label>
+                            <input 
+                                type="tel" 
+                                class="form-input" 
+                                id="phone"
+                                placeholder="e.g., 01234567890"
+                                required>
+                            <div class="error-message" id="phoneError">Please enter a valid phone number</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Temporary Contact Number 
+                                <span class="optional-label">(Optional)</span>
+                            </label>
+                            <input 
+                                type="tel" 
+                                class="form-input" 
+                                id="tempPhone"
+                                placeholder="Alternative contact number">
+                            <div class="error-message" id="tempPhoneError">Please enter a valid phone number</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label required">Delivery Location</label>
+                            <textarea 
+                                class="form-input" 
+                                id="deliveryLocation"
+                                placeholder="Enter your complete delivery address (Street, Building, Apartment, City, etc.)"
+                                required></textarea>
+                            <div class="error-message" id="deliveryLocationError">Please enter your delivery address</div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="checkout-section">
+                    <div class="order-summary">
+                        <h2 class="section-title">
+                            <span class="section-icon">📦</span>
+                            Order Summary
+                        </h2>
+
+                        <div class="summary-items">
+                            ${itemsHTML}
+                        </div>
+
+                        <div class="summary-divider"></div>
+
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>${summary.subtotal.toFixed(2)} EGP</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax (14%)</span>
+                            <span>${summary.tax.toFixed(2)} EGP</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee</span>
+                            <span>${summary.delivery_fee.toFixed(2)} EGP</span>
+                        </div>
+                        
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span class="amount">${summary.total.toFixed(2)} EGP</span>
+                        </div>
+
+                        <button type="submit" form="checkoutForm" class="btn-confirm">
+                            Confirm Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function validatePhone(phone) {
+        const phoneRegex = /^(010|011|012|015)\d{8}$/;
+        return phoneRegex.test(phone.replace(/\s/g, ''));
+    }
+
+    function validateForm() {
+        let isValid = true;
+
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const phone = document.getElementById('phone');
+        const tempPhone = document.getElementById('tempPhone');
+        const deliveryLocation = document.getElementById('deliveryLocation');
+
+        // Reset errors
+        document.querySelectorAll('.error-message').forEach(el => el.classList.remove('visible'));
+        document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+
+        // Validate first name
+        if (!firstName.value.trim()) {
+            firstName.classList.add('error');
+            document.getElementById('firstNameError').classList.add('visible');
+            isValid = false;
+        }
+
+        // Validate last name
+        if (!lastName.value.trim()) {
+            lastName.classList.add('error');
+            document.getElementById('lastNameError').classList.add('visible');
+            isValid = false;
+        }
+
+        // Validate phone
+        if (!validatePhone(phone.value)) {
+            phone.classList.add('error');
+            document.getElementById('phoneError').classList.add('visible');
+            isValid = false;
+        }
+
+        // Validate temp phone (if provided)
+        if (tempPhone.value.trim() && !validatePhone(tempPhone.value)) {
+            tempPhone.classList.add('error');
+            document.getElementById('tempPhoneError').classList.add('visible');
+            isValid = false;
+        }
+
+        // Validate delivery location
+        if (!deliveryLocation.value.trim() || deliveryLocation.value.trim().length < 10) {
+            deliveryLocation.classList.add('error');
+            document.getElementById('deliveryLocationError').textContent = 
+                'Please enter a complete delivery address (at least 10 characters)';
+            document.getElementById('deliveryLocationError').classList.add('visible');
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
+
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const tempPhone = document.getElementById('tempPhone').value.trim();
+        const deliveryLocation = document.getElementById('deliveryLocation').value.trim();
+
+        const orderData = {
+            cart_uuid: getCartUUID(),
+            customer_name: `${firstName} ${lastName}`,
+            phone: phone,
+            temp_phone: tempPhone || null,
+            delivery_location: deliveryLocation,
+            order_type: 'individual'
+        };
+
+        document.getElementById('loadingOverlay').classList.add('active');
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/orders/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.error || 'Failed to create order');
+            }
+
+            // Clear cart after successful order
+            localStorage.removeItem('cart_uuid');
+
+            // Redirect to success page
+            window.location.href = `order_confirmation.html?order_id=${data.order_id}`;
+
+        } catch (err) {
+            console.error('Order submission error:', err);
+            alert('Failed to create order: ' + err.message);
+        } finally {
+            document.getElementById('loadingOverlay').classList.remove('active');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCheckout();
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Order Summary - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1A1A1A 0%, #2C2C2C 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .section {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #FF6B35;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .restaurant-group {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255,107,53,0.3);
+        }
+
+        .restaurant-name {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .restaurant-total {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #FF6B35;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-qty {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #FF6B35;
+        }
+
+        .person-section {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .person-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .person-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .person-total {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #10b981;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            color: #ccc;
+        }
+
+        .final-summary {
+            background: rgba(255,107,53,0.1);
+            border: 2px solid rgba(255,107,53,0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            font-size: 1.1rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.5rem;
+            font-weight: 900;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255,107,53,0.5);
+            margin-top: 1rem;
+        }
+
+        .summary-row.total .amount {
+            color: #FF6B35;
+        }
+
+        .btn-confirm {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,107,53,0.5);
+        }
+
+        .info-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: start;
+        }
+
+        .info-icon {
+            font-size: 1.2rem;
+        }
+
+        .info-text {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="brand">YALLAORDER</div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Group Order Summary</h1>
+            <p class="page-subtitle">Review your group order before confirming</p>
+        </div>
+
+        <div class="section">
+            <div class="section-title">🍽️ Items by Restaurant</div>
+            <div id="restaurantGroups"></div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">👥 Individual Breakdown</div>
+            <div id="personalBreakdown"></div>
+        </div>
+
+        <div class="final-summary">
+            <div class="section-title" style="color: white;">💰 Order Total</div>
+            <div id="finalSummary"></div>
+        </div>
+
+        
+        <button class="btn-confirm" onclick="confirmGroupOrder()">
+            Confirm Group Order
+        </button>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        let groupOrderData = null;
+        const TAX_RATE = 0.14;
+        const DELIVERY_FEE = 20;
+
+        function loadGroupOrderData() {
+            const data = sessionStorage.getItem('groupOrderData');
+            if (!data) {
+                alert('No group order found. Redirecting...');
+                window.location.href = 'group-order-setup.html';
+                return;
+            }
+
+            groupOrderData = JSON.parse(data);
+            generateSummary();
+        }
+
+        function generateSummary() {
+            // Group items by restaurant
+            const restaurantGroups = {};
+            
+            Object.values(groupOrderData.orders).forEach(order => {
+                order.items.forEach(item => {
+                    const restId = item.restaurant_id;
+                    if (!restaurantGroups[restId]) {
+                        restaurantGroups[restId] = {
+                            items: [],
+                            total: 0
+                        };
+                    }
+                    restaurantGroups[restId].items.push({
+                        ...item,
+                        orderedBy: order.memberName
+                    });
+                    restaurantGroups[restId].total += item.subtotal;
+                });
+            });
+
+            displayRestaurantGroups(restaurantGroups);
+            displayPersonalBreakdown();
+            displayFinalSummary();
+        }
+
+        async function displayRestaurantGroups(restaurantGroups) {
+            const container = document.getElementById('restaurantGroups');
+            container.innerHTML = '';
+
+            for (const [restId, data] of Object.entries(restaurantGroups)) {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/restaurants/${restId}`);
+                    const restData = await response.json();
+                    const restaurantName = restData.restaurant ? restData.restaurant.restaurant_name : `Restaurant ${restId}`;
+
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'restaurant-group';
+                    
+                    groupDiv.innerHTML = `
+                        <div class="restaurant-header">
+                            <div class="restaurant-name">🏪 ${restaurantName}</div>
+                            <div class="restaurant-total">${data.total.toFixed(2)} EGP</div>
+                        </div>
+                        ${data.items.map(item => `
+                            <div class="order-item">
+                                <div class="item-details">
+                                    <div class="item-name">${item.item_name}</div>
+                                    <div class="item-qty">Qty: ${item.quantity} × ${item.price.toFixed(2)} EGP (by ${item.orderedBy})</div>
+                                </div>
+                                <div class="item-price">${item.subtotal.toFixed(2)} EGP</div>
+                            </div>
+                        `).join('')}
+                    `;
+                    
+                    container.appendChild(groupDiv);
+                } catch (error) {
+                    console.error('Error loading restaurant:', error);
+                }
+            }
+        }
+
+        function displayPersonalBreakdown() {
+            const container = document.getElementById('personalBreakdown');
+            const numPeople = groupOrderData.numPeople;
+            
+            // Calculate totals
+            const subtotal = Object.values(groupOrderData.orders).reduce((sum, order) => {
+                return sum + order.items.reduce((itemSum, item) => itemSum + item.subtotal, 0);
+            }, 0);
+            
+            const tax = subtotal * TAX_RATE;
+            const sharedCosts = tax + DELIVERY_FEE;
+            const sharedCostPerPerson = sharedCosts / numPeople;
+
+            container.innerHTML = '';
+
+            Object.values(groupOrderData.orders).forEach(order => {
+                const personalSubtotal = order.items.reduce((sum, item) => sum + item.subtotal, 0);
+                const personalTotal = personalSubtotal + sharedCostPerPerson;
+
+                const personDiv = document.createElement('div');
+                personDiv.className = 'person-section';
+                
+                personDiv.innerHTML = `
+                    <div class="person-header">
+                        <div class="person-name">👤 ${order.memberName}</div>
+                        <div class="person-total">${personalTotal.toFixed(2)} EGP</div>
+                    </div>
+                    ${order.items.map(item => `
+                        <div class="order-item">
+                            <div class="item-details">
+                                <div class="item-name">${item.item_name}</div>
+                                <div class="item-qty">Qty: ${item.quantity}</div>
+                            </div>
+                            <div class="item-price">${item.subtotal.toFixed(2)} EGP</div>
+                        </div>
+                    `).join('')}
+                    <div class="breakdown-row" style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <span>Items Total:</span>
+                        <span>${personalSubtotal.toFixed(2)} EGP</span>
+                    </div>
+                    <div class="breakdown-row">
+                        <span>Share of Delivery & Tax:</span>
+                        <span>${sharedCostPerPerson.toFixed(2)} EGP</span>
+                    </div>
+                    <div class="breakdown-row" style="font-weight: 700; color: #10b981; font-size: 1.1rem;">
+                        <span>Your Total:</span>
+                        <span>${personalTotal.toFixed(2)} EGP</span>
+                    </div>
+                `;
+                
+                container.appendChild(personDiv);
+            });
+        }
+
+        function displayFinalSummary() {
+            const container = document.getElementById('finalSummary');
+            
+            const subtotal = Object.values(groupOrderData.orders).reduce((sum, order) => {
+                return sum + order.items.reduce((itemSum, item) => itemSum + item.subtotal, 0);
+            }, 0);
+            
+            const tax = subtotal * TAX_RATE;
+            const total = subtotal + tax + DELIVERY_FEE;
+
+            container.innerHTML = `
+                <div class="summary-row">
+                    <span>Subtotal (All Items):</span>
+                    <span>${subtotal.toFixed(2)} EGP</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (14%):</span>
+                    <span>${tax.toFixed(2)} EGP</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Fee:</span>
+                    <span>${DELIVERY_FEE.toFixed(2)} EGP</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Grand Total:</span>
+                    <span class="amount">${total.toFixed(2)} EGP</span>
+                </div>
+            `;
+        }
+
+        function confirmGroupOrder() {
+            // Save to session and redirect to checkout
+            sessionStorage.setItem('groupOrderData', JSON.stringify(groupOrderData));
+            window.location.href = 'group-checkout.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', loadGroupOrderData);
+    </script>
+</body>
+</html>

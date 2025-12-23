@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track My Orders - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1A1A1A 0%, #2C2C2C 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .navbar {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .back-btn {
+            padding: 0.7rem 1.5rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .back-btn:hover {
+            background: rgba(255,107,53,0.2);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            color: #999;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #FF6B35;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .orders-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .order-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B35, #F7931E);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255,107,53,0.3);
+            border-color: #FF6B35;
+        }
+
+        .order-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-id {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+
+        .order-date {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .status-preparing {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status-On_the_way {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-delivered {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .order-items {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            color: #FF6B35;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-name {
+            font-weight: 600;
+        }
+
+        .item-qty {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: #FF6B35;
+        }
+
+        .order-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+        }
+
+        .summary-row.total {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            padding-top: 0.5rem;
+            border-top: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .summary-row.total .amount {
+            color: #FF6B35;
+        }
+
+        .timeline {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 45px;
+            width: 2px;
+            height: calc(100% - 20px);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .timeline-item.completed .timeline-dot {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 0.5rem;
+        }
+
+        .timeline-title {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-desc {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtext {
+            color: #999;
+            margin-bottom: 2rem;
+        }
+
+        .btn-order-now {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-order-now:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255,107,53,0.5);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .order-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="brand">YALLAORDER</div>
+        <a href="start-order.html" class="back-btn">← Back</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">My Orders</h1>
+        <p class="page-subtitle">Track your order status and history</p>
+    </div>
+
+    <div id="loadingState" class="loading">
+        <div class="spinner"></div>
+        <p>Loading your orders...</p>
+    </div>
+
+    <div id="ordersGrid" class="orders-grid" style="display: none;"></div>
+
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-icon">📦</div>
+        <h2 class="empty-text">No Orders Yet</h2>
+        <p class="empty-subtext">You haven't placed any orders. Start ordering now!</p>
+        <a href="restaurants.html" class="btn-order-now">Browse Restaurants</a>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = 'http://localhost:5000';
+    let userData = null;
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric',
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function getStatusClass(status) {
+    const statusMap = {
+        'pending': 'status-pending',
+        'preparing': 'status-preparing',
+        'on_the_way': 'status-On_the_way',
+        'delivered': 'status-delivered',
+        'cancelled': 'status-cancelled'
+    };
+    return statusMap[status.toLowerCase()] || 'status-pending';
+}
+
+    function getTimelineSteps(status) {
+    const allSteps = [
+        { id: 'pending', icon: '📝', title: 'Order Placed', desc: 'Your order has been received' },
+        { id: 'preparing', icon: '🔥', title: 'Preparing', desc: 'Restaurant is preparing your food' },
+        { id: 'on_the_way', icon: '🚚', title: 'On the Way', desc: 'Order is being delivered' },
+        { id: 'delivered', icon: '✅', title: 'Delivered', desc: 'Order has been delivered' }
+    ];
+
+    if (status === 'cancelled') {
+        return [
+            { id: 'pending', icon: '📝', title: 'Order Placed', desc: 'Your order has been received', state: 'completed' },
+            { id: 'cancelled', icon: '❌', title: 'Cancelled', desc: 'Order was cancelled', state: 'active' }
+        ];
+    }
+
+    const statusOrder = ['pending', 'preparing', 'on_the_way', 'delivered'];
+    const currentIndex = statusOrder.indexOf(status.toLowerCase());
+
+    return allSteps.map((step, index) => ({
+        ...step,
+        state: index < currentIndex ? 'completed' : (index === currentIndex ? 'active' : 'pending')
+    }));
+}
+
+
+    async function loadUserOrders() {
+        try {
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('ordersGrid').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+
+            const user = sessionStorage.getItem('user');
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            userData = JSON.parse(user);
+
+             // CHANGED: Use the new /user/phone/ endpoint
+        const url = `${API_BASE_URL}/orders/user/phone/${userData.phone}`;
+        console.log('Fetching from:', url);
+        
+        const response = await fetch(url);
+        
+        console.log('Response status:', response.status);
+            
+            if (!response.ok) {
+                throw new Error('Failed to load orders');
+            }
+
+            const orders = await response.json();
+
+            if (orders.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+            } else {
+                displayOrders(orders);
+                document.getElementById('ordersGrid').style.display = 'grid';
+            }
+        } catch (error) {
+            console.error('Error loading orders:', error);
+            document.getElementById('emptyState').style.display = 'block';
+        } finally {
+            document.getElementById('loadingState').style.display = 'none';
+        }
+    }
+
+    function displayOrders(orders) {
+        const grid = document.getElementById('ordersGrid');
+
+        grid.innerHTML = orders.map(order => {
+            const timelineSteps = getTimelineSteps(order.status);
+            
+            return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-id">Order #${order.id}</div>
+                            <div class="order-date">${formatDate(order.created_at)}</div>
+                        </div>
+                        <span class="status-badge ${getStatusClass(order.status)}">${order.status}</span>
+                    </div>
+
+                    <div class="order-items">
+                        <div class="section-title">📋 Order Items</div>
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <div>
+                                    <div class="item-name">${item.item_name}</div>
+                                    <div class="item-qty">Qty: ${item.quantity}</div>
+                                </div>
+                                <div class="item-price">${item.subtotal.toFixed(2)} EGP</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>${(order.total - order.delivery_fee - order.tax).toFixed(2)} EGP</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee</span>
+                            <span>${order.delivery_fee.toFixed(2)} EGP</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax</span>
+                            <span>${order.tax.toFixed(2)} EGP</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span class="amount">${order.total.toFixed(2)} EGP</span>
+                        </div>
+                    </div>
+
+                    <div class="timeline">
+                        <div class="section-title">🚚 Order Status</div>
+                        ${timelineSteps.map(step => `
+                            <div class="timeline-item ${step.state || ''}">
+                                <div class="timeline-dot">${step.icon}</div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">${step.title}</div>
+                                    <div class="timeline-desc">${step.desc}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Auto-refresh orders every 30 seconds
+    setInterval(() => {
+        loadUserOrders();
+    }, 30000);
+
+    window.addEventListener('DOMContentLoaded', loadUserOrders);
+</script>
+
+</body>
+</html>

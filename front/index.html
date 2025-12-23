@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YallaOrder - Food Delivery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .hero-container {
+            display: flex;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF6B35 50%, #F7931E 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative clouds */
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.9;
+            animation: float-cloud 20s infinite ease-in-out;
+            box-shadow: 0 5px 20px rgba(255,255,255,0.3);
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+
+        .cloud::after {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            right: 10px;
+        }
+
+        .cloud-1 {
+            width: 100px;
+            height: 40px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .cloud-2 {
+            width: 120px;
+            height: 45px;
+            top: 25%;
+            left: 15%;
+            animation-delay: 3s;
+        }
+
+        @keyframes float-cloud {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-20px) translateX(10px); }
+        }
+
+        /* Left side - Illustration */
+        .illustration-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            position: relative;
+        }
+
+        .delivery-illustration {
+            position: relative;
+            animation: bounce-delivery 3s infinite ease-in-out;
+            filter: drop-shadow(0 20px 40px rgba(0,0,0,0.3));
+            transform: scaleX(-1);
+        }
+
+        @keyframes bounce-delivery {
+            0%, 100% { transform: scaleX(-1) translateY(0px); }
+            50% { transform: scaleX(-1) translateY(-30px); }
+        }
+
+        .delivery-image {
+            width: 500px;
+            height: auto;
+            position: relative;
+            z-index: 40;
+        }
+
+        /* Right side - Login Form */
+        .form-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background: transparent;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .brand-title {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            letter-spacing: 5px;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+            line-height: 1.1;
+        }
+
+        .brand-subtitle {
+            color: white;
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #E63946;
+            margin-bottom: 2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border: 2px solid #E8E8E8;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #F8F8F8;
+        }
+
+        .input-group input::placeholder {
+            color: #999;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #E63946;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.1);
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 1.3rem;
+            background: #1A1A1A;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .btn-next:hover {
+            background: #E63946;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(230, 57, 70, 0.4);
+        }
+
+        .btn-next:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-next:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .form-footer a {
+            color: #E63946;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .form-footer a:hover {
+            color: #C1121F;
+            text-decoration: underline;
+        }
+
+        /* Alert message */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.error {
+            background: #fee;
+            color: #c00;
+            border: 1px solid #fcc;
+        }
+
+        .alert.success {
+            background: #efe;
+            color: #0a0;
+            border: 1px solid #cfc;
+        }
+
+        /* Food emojis floating */
+        .food-emoji {
+            position: absolute;
+            font-size: 4rem;
+            animation: float-food 15s infinite ease-in-out;
+            opacity: 0.4;
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
+        }
+
+        .emoji-1 { top: 20%; right: 10%; animation-delay: 0s; }
+        .emoji-2 { top: 40%; right: 5%; animation-delay: 3s; }
+        .emoji-4 { top: 30%; left: 45%; animation-delay: 2s; }
+        .emoji-5 { bottom: 10%; left: 4%; animation-delay: 4s; }
+
+        @keyframes float-food {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-30px) rotate(10deg); }
+            75% { transform: translateY(30px) rotate(-10deg); }
+        }
+
+        /* Speed lines for motion effect */
+        .speed-line {
+            position: absolute;
+            height: 3px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 2px;
+            animation: speed-move 1.5s infinite ease-out;
+        }
+
+        .speed-1 {
+            width: 80px;
+            top: 40%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .speed-2 {
+            width: 60px;
+            top: 50%;
+            left: 8%;
+            animation-delay: 0.3s;
+        }
+
+        .speed-3 {
+            width: 100px;
+            top: 60%;
+            left: 3%;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes speed-move {
+            0% { 
+                transform: translateX(0) scaleX(1);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateX(200px) scaleX(0.5);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .hero-container {
+                flex-direction: column;
+            }
+            
+            .illustration-side {
+                min-height: 50vh;
+                padding: 2rem;
+            }
+
+            .delivery-image {
+                width: 350px;
+            }
+
+            .brand-title {
+                font-size: 3rem;
+            }
+
+            .brand-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .login-container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-container">
+        <!-- Decorative clouds -->
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+
+        <!-- Speed lines -->
+        <div class="speed-line speed-1"></div>
+        <div class="speed-line speed-2"></div>
+        <div class="speed-line speed-3"></div>
+
+        <!-- Food emojis -->
+        <div class="food-emoji emoji-1">🍕</div>
+        <div class="food-emoji emoji-2">🍔</div>
+        <div class="food-emoji emoji-4">🍜</div>
+        <div class="food-emoji emoji-5">🍰</div>
+
+        <!-- Left side - Illustration -->
+        <div class="illustration-side">
+            <div class="delivery-illustration">
+                <img src="https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/1f6f5.svg" 
+                     alt="Delivery Scooter" 
+                     class="delivery-image"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                
+                <svg class="delivery-image" style="display:none;" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="250" cy="300" rx="100" ry="60" fill="#FFD60A" opacity="0.3"/>
+                    <rect x="200" y="250" width="150" height="80" rx="40" fill="#FFD60A"/>
+                    <circle cx="200" cy="340" r="40" fill="#1A1A1A"/>
+                    <circle cx="200" cy="340" r="30" fill="#2C2C2C"/>
+                    <circle cx="200" cy="340" r="15" fill="#FFFFFF"/>
+                    <circle cx="340" cy="340" r="40" fill="#1A1A1A"/>
+                    <circle cx="340" cy="340" r="30" fill="#2C2C2C"/>
+                    <circle cx="340" cy="340" r="15" fill="#FFFFFF"/>
+                    <path d="M 220 230 Q 200 200 180 200" stroke="#1A1A1A" stroke-width="8" fill="none"/>
+                    <circle cx="270" cy="180" r="35" fill="#F4A261"/>
+                    <rect x="245" y="210" width="50" height="60" rx="20" fill="#FFFFFF"/>
+                    <ellipse cx="270" cy="165" rx="40" ry="35" fill="#E63946"/>
+                    <rect x="220" y="220" width="20" height="50" rx="10" fill="#FFFFFF" transform="rotate(-30 230 220)"/>
+                    <rect x="300" y="220" width="20" height="50" rx="10" fill="#FFFFFF" transform="rotate(30 310 220)"/>
+                    <rect x="250" y="270" width="20" height="60" rx="10" fill="#1A1A1A"/>
+                    <rect x="270" y="270" width="20" height="60" rx="10" fill="#1A1A1A"/>
+                    <rect x="150" y="100" width="90" height="90" rx="10" fill="#E63946"/>
+                    <rect x="160" y="110" width="70" height="70" rx="5" fill="#D62839"/>
+                    <line x1="175" y1="130" x2="225" y2="130" stroke="#FFFFFF" stroke-width="3"/>
+                    <line x1="175" y1="145" x2="225" y2="145" stroke="#FFFFFF" stroke-width="3"/>
+                    <line x1="195" y1="160" x2="225" y2="160" stroke="#FFFFFF" stroke-width="3"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Right side - Login Form -->
+        <div class="form-side">
+            <div class="login-wrapper">
+                <h1 class="brand-title">YALLA<br>ORDER</h1>
+                <p class="brand-subtitle">Easy & Fast, Order From Home</p>
+                
+                <div class="login-container">
+                    <h2 class="form-title">LOGIN</h2>
+                    
+                    <!-- Alert Message -->
+                    <div id="alertMessage" class="alert"></div>
+                    
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="input-group">
+                            <input type="tel" id="phone" placeholder="Phone Number" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn-next" id="loginBtn">NEXT</button>
+                    </form>
+                    <div class="form-footer">
+                        Don't have an account? <a href="register.html">Register</a><br>
+                        Wanna become a partner? <a href="partner.html">Join us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+
+        function showAlert(message, type) {
+            const alertEl = document.getElementById('alertMessage');
+            alertEl.textContent = message;
+            alertEl.className = `alert ${type} show`;
+            
+            setTimeout(() => {
+                alertEl.className = 'alert';
+            }, 5000);
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'LOGGING IN...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ phone, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.user_id) {
+                    // Store user data in session storage
+                    const userData = {
+                        user_id: data.user_id,
+                        first_name: data.first_name,
+                        last_name: data.last_name,
+                        phone: phone
+                    };
+                    sessionStorage.setItem('user', JSON.stringify(userData));
+                    
+                    
+                    // Redirect to start order page after 1 second
+                    setTimeout(() => {
+                        window.location.href = 'start-order.html';
+                    }, 1000);
+                } else {
+                    showAlert(data.message || 'Invalid phone number or password', 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'NEXT';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAlert('Connection error. Please check if the server is running.', 'error');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'NEXT';
+            }
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = sessionStorage.getItem('user');
+            if (user) {
+                // User already logged in, redirect to start order
+                window.location.href = 'start-order.html';
+            }
+        });
+    </script>
+</body>
+</html>

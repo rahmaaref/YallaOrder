@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Selection - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FFA500 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #FF6B35;
+        }
+
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px);
+            padding: 3rem;
+        }
+
+        .selection-card {
+            background: white;
+            border-radius: 40px;
+            padding: 4rem;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .person-icon {
+            font-size: 6rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .person-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #1A1A1A;
+            margin-bottom: 0.5rem;
+        }
+
+        .person-subtitle {
+            font-size: 1.3rem;
+            color: #FF6B35;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 50px;
+            height: 20px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            height: 100%;
+            border-radius: 50px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            margin-top: 0.5rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .order-status {
+            background: #f8f8f8;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .status-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1A1A1A;
+        }
+
+        .member-list {
+            display: grid;
+            gap: 0.8rem;
+            text-align: left;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .member-item.completed {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .member-item.active {
+            border-color: #FF6B35;
+            background: #fff7ed;
+        }
+
+        .member-status {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: #e0e0e0;
+            color: white;
+        }
+
+        .member-item.completed .member-status {
+            background: #10b981;
+        }
+
+        .member-item.active .member-status {
+            background: #FF6B35;
+        }
+
+        .member-name {
+            flex: 1;
+            font-weight: 600;
+            color: #1A1A1A;
+        }
+
+        .member-items-count {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 1rem;
+            background: #f0f0f0;
+            color: #1A1A1A;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .selection-card {
+                padding: 2.5rem 2rem;
+            }
+
+            .person-title {
+                font-size: 2rem;
+            }
+
+            .person-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🍕 YallaOrder</div>
+    </nav>
+
+    <div class="main-container">
+        <div class="selection-card">
+            <div class="person-icon">👤</div>
+            <h1 class="person-title" id="personName">Loading...</h1>
+            <p class="person-subtitle" id="personNumber">Person 1 of 5</p>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">0 of 5 people have ordered</p>
+
+            <div class="order-status">
+                <div class="status-title">📋 Order Progress</div>
+                <div class="member-list" id="memberList"></div>
+            </div>
+
+            <button class="btn-primary" onclick="chooseRestaurant()">
+                🍽️ Choose Restaurant
+            </button>
+
+            <button class="btn-secondary" onclick="viewSummary()" id="summaryBtn" style="display: none;">
+                📊 View Group Summary
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let groupOrderData = null;
+
+        function loadGroupOrderData() {
+            const data = sessionStorage.getItem('groupOrderData');
+            if (!data) {
+                alert('No group order found. Redirecting...');
+                window.location.href = 'group-order-setup.html';
+                return;
+            }
+
+            groupOrderData = JSON.parse(data);
+            updateUI();
+        }
+
+        function updateUI() {
+            const currentPerson = groupOrderData.currentPerson;
+            const totalPeople = groupOrderData.numPeople;
+            const currentMemberName = groupOrderData.members[currentPerson - 1];
+
+            // Update header
+            document.getElementById('personName').textContent = currentMemberName;
+            document.getElementById('personNumber').textContent = `Person ${currentPerson} of ${totalPeople}`;
+
+            // Update progress bar
+            const completedCount = Object.values(groupOrderData.orders).filter(o => o.completed).length;
+            const progressPercent = (completedCount / totalPeople) * 100;
+            document.getElementById('progressFill').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').textContent = `${completedCount} of ${totalPeople} people have ordered`;
+
+            // Update member list
+            const memberList = document.getElementById('memberList');
+            memberList.innerHTML = '';
+
+            groupOrderData.members.forEach((member, index) => {
+                const personNum = index + 1;
+                const orderData = groupOrderData.orders[personNum];
+                const isActive = personNum === currentPerson;
+                const isCompleted = orderData.completed;
+                const itemCount = orderData.items.length;
+
+                const memberItem = document.createElement('div');
+                memberItem.className = `member-item ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`;
+                memberItem.innerHTML = `
+                    <div class="member-status">${isCompleted ? '✓' : personNum}</div>
+                    <div class="member-name">${member}</div>
+                    <div class="member-items-count">
+                        ${isCompleted ? `${itemCount} items` : isActive ? 'Ordering now' : 'Waiting'}
+                    </div>
+                `;
+                memberList.appendChild(memberItem);
+            });
+
+            // Show summary button if all completed
+            if (completedCount === totalPeople) {
+                document.getElementById('summaryBtn').style.display = 'block';
+            }
+        }
+
+        function chooseRestaurant() {
+            // Save current state
+            sessionStorage.setItem('groupOrderData', JSON.stringify(groupOrderData));
+            
+            // Redirect to restaurant selection
+            window.location.href = 'group-restaurants.html';
+        }
+
+        function viewSummary() {
+            window.location.href = 'group-order-summary.html';
+        }
+
+        window.addEventListener('DOMContentLoaded', loadGroupOrderData);
+    </script>
+</body>
+</html>

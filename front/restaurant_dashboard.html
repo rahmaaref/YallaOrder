@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - YallaOrder Partner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .navbar {
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-left: 70px; 
+}
+
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #FF6B35;
+            cursor: pointer;
+        }
+
+        .brand-subtitle {
+            font-size: 0.85rem;
+            color: #999;
+            font-weight: 400;
+            margin-top: 0.2rem;
+        }
+
+        .btn-back {
+            padding: 0.5rem 1.5rem;
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 70px;
+            background: rgba(0,0,0,0.9);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 0;
+            gap: 2rem;
+            z-index: 100;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #999;
+            font-size: 1.5rem;
+            position: relative;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-icon.active {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            color: white;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #FF6B35;
+            cursor: default;
+        }
+
+        .nav-divider {
+            width: 30px;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin: 0.5rem 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            margin-left: 70px;
+        }
+
+        .stats-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:first-child {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card:first-child .stat-number {
+            color: #a78bfa;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #999;
+            text-transform: capitalize;
+        }
+
+        .orders-section {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table thead th {
+            text-align: left;
+            padding: 1rem;
+            color: #999;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .orders-table tbody tr {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .orders-table tbody tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .orders-table tbody td {
+            padding: 1.2rem 1rem;
+            color: #ccc;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .status-preparing {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status-ready {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-delivered {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100vh;
+            background: #1a1a1a;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            z-index: 999;
+            transition: right 0.3s ease-out;
+            overflow-y: auto;
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        /* Info Sidebar */
+        .info-sidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100vh;
+            background: #1a1a1a;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            z-index: 999;
+            transition: right 0.3s ease-out;
+            overflow-y: auto;
+        }
+
+        .info-sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.1);
+            transform: rotate(90deg);
+        }
+
+        .sidebar-content {
+            padding: 2rem;
+        }
+
+        .order-detail-section {
+            margin-bottom: 2rem;
+        }
+
+        .detail-section-title {
+            font-size: 1.1rem;
+            color: #FF6B35;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: white;
+            word-wrap: break-word;
+        }
+
+        .info-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            color: white;
+            word-wrap: break-word;
+        }
+
+        .order-items-list {
+            list-style: none;
+        }
+
+        .order-item {
+            background: rgba(255,255,255,0.05);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-details {
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .status-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn-status {
+            flex: 1;
+            min-width: 120px;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .btn-preparing {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-preparing:hover {
+            background: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-on_the_way {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-on_the_way:hover {
+            background: rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-cancel {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        /* Notification Banner */
+.notification-banner {
+    background: linear-gradient(135deg, #FF6B35, #F7931E);
+    padding: 1rem 2rem;
+    margin-left: 70px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideDown 0.3s ease-out;
+    box-shadow: 0 4px 10px rgba(255,107,53,0.3);
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.notification-banner.show {
+    display: flex;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.notification-text {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.btn-view-orders {
+    background: rgba(255,255,255,0.9);
+    color: #FF6B35;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s;
+    margin-right: 1rem;
+}
+
+.btn-view-orders:hover {
+    background: white;
+    transform: scale(1.05);
+}
+
+.notification-dismiss {
+    background: rgba(0,0,0,0.2);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.notification-dismiss:hover {
+    background: rgba(0,0,0,0.3);
+}
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .info-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .sidebar-nav {
+                width: 60px;
+            }
+
+            .container {
+                margin-left: 60px;
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .orders-table {
+                font-size: 0.85rem;
+            }
+
+            .orders-table thead th,
+            .orders-table tbody td {
+                padding: 0.8rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar-nav">
+        <div class="logo-icon">🍕</div>
+        <div class="nav-divider"></div>
+                <div class="logo-icon"></div>
+        <div class="nav-icon active" onclick="goToDashboard()" title="Home">
+            🏠
+
+        </div>
+        <div class="nav-icon " onclick="goToDetails()" title="Orders">
+            📦
+        </div>
+        <div class="nav-icon" onclick="goToMenu()" title="Menu">
+            📋
+        </div>
+                <div class="logo-icon"></div>
+
+        <div class="nav-divider"></div>
+        <div class="nav-icon" onclick="openInfoSidebar()" title="Restaurant Info">
+            👤
+        </div>
+        <div class="nav-icon" onclick="goToSettings()" title="Settings">
+            ⚙️
+        </div>
+        <div class="nav-icon" onclick="handleLogout()" title="Logout">
+            🚪
+        </div>
+    </div>
+
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Order Details Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Order Details</div>
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+        </div>
+        
+        <div class="sidebar-content" id="sidebarContent">
+            <!-- Order details will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Restaurant Info Sidebar -->
+    <div class="info-sidebar" id="infoSidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Restaurant Info</div>
+            <button class="close-btn" onclick="closeInfoSidebar()">×</button>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="order-detail-section">
+                <div class="detail-section-title">Restaurant Details</div>
+                <div class="info-item">
+                    <div class="info-label">Restaurant Name</div>
+                    <div class="info-value" id="infoRestaurantName">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Manager Name</div>
+                    <div class="info-value" id="infoManagerName">-</div>
+                </div>
+            </div>
+
+            <div class="order-detail-section">
+                <div class="detail-section-title">Contact Information</div>
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value" id="infoEmail">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone</div>
+                    <div class="info-value" id="infoPhone">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Hotline</div>
+                    <div class="info-value" id="infoHotline">-</div>
+                </div>
+            </div>
+
+            <div class="order-detail-section">
+                <div class="detail-section-title">Location</div>
+                <div class="info-item">
+                    <div class="info-label">Address</div>
+                    <div class="info-value" id="infoAddress">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div>
+            <div class="brand" id="brandName" onclick="goToDashboard()">YallaOrder Partner</div>
+            <div class="brand-subtitle">Orders Management Dashboard</div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Statistics Section -->
+        <div class="stats-section">
+            <div class="section-header">
+                <h2 class="section-title">Sales</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="deliveredOrders">0</div>
+                    <div class="stat-label">Delivered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingOrders">0</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="preparingOrders">0</div>
+                    <div class="stat-label">Preparing</div>
+                </div>
+            </div>
+        </div>
+<!-- New Orders Notification Banner -->
+<div class="notification-banner" id="notificationBanner">
+    <div class="notification-content">
+        <span class="notification-icon">🔔</span>
+        <span class="notification-text" id="notificationText">You have new orders!</span>
+    </div>
+    <div>
+        <button class="btn-view-orders" onclick="goToDetails()">View Orders</button>
+        <button class="notification-dismiss" onclick="dismissNotification()">Dismiss</button>
+    </div>
+</div>
+        <!-- Orders Table Section -->
+        <div class="orders-section">
+            <div class="section-header">
+                <h2 class="section-title">Order Recently</h2>
+            </div>
+
+            <div id="ordersTableContainer">
+                <table class="orders-table" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Orders will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        let restaurantData = null;
+        let allOrders = [];
+
+        function goToDashboard() {
+            window.location.href = 'restaurant_dashboard.html';
+        }
+
+        function goToMenu() {
+            window.location.href = 'menu.html';
+        }
+        function goToDetails() {
+            window.location.href = 'order_details.html';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        function openInfoSidebar() {
+            const infoSidebar = document.getElementById('infoSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            // Close order details sidebar if open
+            closeSidebar();
+            
+            infoSidebar.classList.add('active');
+            overlay.classList.add('active');
+        }
+
+        function closeInfoSidebar() {
+            const infoSidebar = document.getElementById('infoSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            infoSidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        function goToSettings() {
+            window.location.href = 'restaurant-settings.html';
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.removeItem('partner');
+                window.location.href = 'partner_login.html';
+            }
+        }
+
+        function getStatusClass(status) {
+    const statusMap = {
+        'pending': 'status-pending',
+        'preparing': 'status-preparing',
+        'on_the_way': 'status-ready',  // Using ready class for on_the_way
+        'delivered': 'status-delivered',
+        'cancelled': 'status-cancelled'
+    };
+    return statusMap[status.toLowerCase()] || 'status-pending';
+}
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+        }
+
+        function showOrderDetails(order) {
+            const sidebarContent = document.getElementById('sidebarContent');
+            
+            const itemsHtml = order.items.map(item => `
+                <li class="order-item">
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-details">
+                        <span>Qty: ${item.quantity}</span>
+                        <span>EGP ${item.subtotal.toFixed(2)}</span>
+                    </div>
+                </li>
+            `).join('');
+
+            sidebarContent.innerHTML = `
+                <div class="order-detail-section">
+                    <div class="detail-section-title">Order Information</div>
+                    <div class="detail-item">
+                        <div class="detail-label">Order ID</div>
+                        <div class="detail-value">#${order.id}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Date</div>
+                        <div class="detail-value">${formatDate(order.created_at)}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">
+                            <span class="status-badge ${getStatusClass(order.status)}">${order.status}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-detail-section">
+                    <div class="detail-section-title">Customer Details</div>
+                    <div class="detail-item">
+                        <div class="detail-label">Phone</div>
+                        <div class="detail-value">${order.phone}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Delivery Location</div>
+                        <div class="detail-value">${order.delivery_location}</div>
+                    </div>
+                </div>
+
+                <div class="order-detail-section">
+                    <div class="detail-section-title">Order Items</div>
+                    <ul class="order-items-list">
+                        ${itemsHtml}
+                    </ul>
+                </div>
+
+                <div class="order-detail-section">
+                    <div class="detail-section-title">Payment Summary</div>
+                    <div class="detail-item">
+                        <div class="detail-label">Subtotal</div>
+                        <div class="detail-value">EGP ${order.subtotal.toFixed(2)}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Delivery Fee</div>
+                        <div class="detail-value">EGP ${order.delivery_fee.toFixed(2)}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Tax</div>
+                        <div class="detail-value">EGP ${order.tax.toFixed(2)}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Total</div>
+                        <div class="detail-value" style="font-size: 1.5rem; color: #8b5cf6; font-weight: 700;">EGP ${order.total.toFixed(2)}</div>
+                    </div>
+                </div>
+
+                ${order.status !== 'delivered' && order.status !== 'cancelled' ? `
+                <div class="order-detail-section">
+                    <div class="detail-section-title">Update Status</div>
+                    <div class="status-actions">
+                        ${order.status === 'pending' ? `
+                            <button class="btn-status btn-preparing" onclick="updateOrderStatus(${order.restaurant_order_id}, 'preparing')">
+                                Start Preparing
+                            </button>
+                        ` : ''}
+                        ${order.status === 'preparing' ? `
+    <button class="btn-status btn-on_the_way" onclick="updateOrderStatus(${order.restaurant_order_id}, 'on_the_way')">
+        On the Way
+    </button>
+` : ''}
+                        <button class="btn-status btn-cancel" onclick="updateOrderStatus(${order.restaurant_order_id}, 'cancelled')">
+                            Cancel Order
+                        </button>
+                    </div>
+                </div>
+                ` : ''}
+            `;
+
+            toggleSidebar();
+        }
+
+        async function updateOrderStatus(restaurantOrderId, newStatus) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/restaurants/orders/update/${restaurantOrderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                if (response.ok) {
+                    alert(`Order status updated to ${newStatus}!`);
+                    closeSidebar();
+                    loadOrders(); // Reload orders
+                } else {
+                    alert('Failed to update order status');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error updating order status');
+            }
+        }
+
+        function updateStatistics() {
+            const total = allOrders.length;
+            const delivered = allOrders.filter(o => o.status === 'delivered').length;
+            const pending = allOrders.filter(o => o.status === 'pending').length;
+            const preparing = allOrders.filter(o => o.status === 'preparing').length;
+
+            document.getElementById('totalOrders').textContent = total;
+            document.getElementById('deliveredOrders').textContent = delivered;
+            document.getElementById('pendingOrders').textContent = pending;
+            document.getElementById('preparingOrders').textContent = preparing;
+        }
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            
+            if (allOrders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-icon">📦</div>
+                                <div>No orders yet</div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = allOrders.map(order => `
+                <tr onclick='showOrderDetails(${JSON.stringify(order).replace(/'/g, "&#39;")})'>
+                    <td>#${order.id}</td>
+                    <td>${order.phone}</td>
+                    <td>${formatDate(order.created_at)}</td>
+                    <td>EGP ${order.total.toFixed(2)}</td>
+                    <td><span class="status-badge ${getStatusClass(order.status)}">${order.status}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadOrders() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/restaurants/orders/${restaurantData.id}`);
+        
+        if (response.ok) {
+            allOrders = await response.json(); // Data is already in correct format
+        } else {
+            console.error('Failed to load orders:', response.status);
+            allOrders = [];
+        }
+    } catch (error) {
+        console.error('Error loading orders:', error);
+        allOrders = [];
+    }
+
+    updateStatistics();
+    renderOrdersTable();
+}
+        
+
+        function loadRestaurantData() {
+            const partnerData = sessionStorage.getItem('partner');
+            
+            if (!partnerData) {
+                window.location.href = 'partner_login.html';
+                return;
+            }
+
+            restaurantData = JSON.parse(partnerData);
+            document.getElementById('brandName').textContent = restaurantData.name;
+            
+            // Populate info sidebar
+            document.getElementById('infoRestaurantName').textContent = restaurantData.name;
+            document.getElementById('infoManagerName').textContent = restaurantData.manager_name;
+            document.getElementById('infoEmail').textContent = restaurantData.email;
+            document.getElementById('infoPhone').textContent = restaurantData.phone;
+            document.getElementById('infoHotline').textContent = restaurantData.hotline || 'N/A';
+            document.getElementById('infoAddress').textContent = restaurantData.address;
+        }
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const infoSidebar = document.getElementById('infoSidebar');
+            const ordersTable = document.getElementById('ordersTable');
+            const sidebarNav = document.querySelector('.sidebar-nav');
+            
+            if ((sidebar.classList.contains('active') || infoSidebar.classList.contains('active')) && 
+                !sidebar.contains(event.target) && 
+                !infoSidebar.contains(event.target) &&
+                !sidebarNav.contains(event.target) &&
+                !ordersTable.contains(event.target)) {
+                closeSidebar();
+                closeInfoSidebar();
+            }
+        });
+
+        // Close sidebar on ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+                closeInfoSidebar();
+            }
+        });
+
+        // Load data when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            loadRestaurantData();
+            loadOrders();
+            startOrderPolling();
+        });
+        // Notification System
+let lastOrderCount = 0;
+let notificationSound = null;
+
+// Initialize notification sound
+function initNotificationSound() {
+    notificationSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZSA0PVqzn7a1aFgxIo+Lzu3AeBzWN1PTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+Lzu3AeBzWN1vTRgi8GH2q/8OObRQwQV67o66xXFQ1Iq+L');
+}
+
+// Check for new orders
+async function checkForNewOrders() {
+    if (!restaurantData) return;
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/restaurants/orders/${restaurantData.id}/pending-count`);
+        if (response.ok) {
+            const data = await response.json();
+            const currentCount = data.count;
+            
+            // Show notification if there are new orders
+            if (currentCount > lastOrderCount && lastOrderCount !== 0) {
+                showNotification(currentCount);
+                playNotificationSound();
+            }
+            
+            lastOrderCount = currentCount;
+            
+            // Update pending orders stat
+            document.getElementById('pendingOrders').textContent = currentCount;
+        }
+    } catch (error) {
+        console.error('Error checking for new orders:', error);
+    }
+}
+
+function showNotification(count) {
+    const banner = document.getElementById('notificationBanner');
+    const text = document.getElementById('notificationText');
+    
+    text.textContent = `🎉 You have ${count} new order${count > 1 ? 's' : ''}!`;
+    banner.classList.add('show');
+    
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => {
+        dismissNotification();
+    }, 10000);
+}
+
+function dismissNotification() {
+    const banner = document.getElementById('notificationBanner');
+    banner.classList.remove('show');
+}
+
+function playNotificationSound() {
+    if (notificationSound) {
+        notificationSound.play().catch(e => console.log('Could not play sound:', e));
+    }
+}
+
+// Initialize and start polling
+function startOrderPolling() {
+    initNotificationSound();
+    
+    // Check immediately
+    checkForNewOrders();
+    
+    // Then check every 10 seconds
+    setInterval(checkForNewOrders, 10000);
+}
+    </script>
+</body>
+</html>

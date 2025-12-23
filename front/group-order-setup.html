@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Order Setup - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 50%, #FFA500 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .back-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #1A1A1A;
+        }
+
+        .back-btn:hover {
+            background: #e0e0e0;
+            transform: translateX(-3px);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #FF6B35;
+            letter-spacing: 2px;
+        }
+
+        .user-name {
+            font-size: 1rem;
+            color: #1A1A1A;
+            font-weight: 600;
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 80px);
+            padding: 3rem;
+            position: relative;
+        }
+
+        /* Animated food particles */
+        .food-particle {
+            position: absolute;
+            font-size: 3rem;
+            animation: float-particle 20s infinite ease-in-out;
+            opacity: 0.5;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+        }
+
+        .particle-1 { top: 10%; left: 8%; animation-delay: 0s; }
+        .particle-2 { top: 25%; right: 10%; animation-delay: 2s; }
+        .particle-3 { top: 50%; left: 5%; animation-delay: 4s; }
+        .particle-4 { top: 70%; right: 8%; animation-delay: 6s; }
+
+        @keyframes float-particle {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+                opacity: 0.5;
+            }
+            50% { 
+                transform: translateY(-40px) translateX(30px) rotate(180deg); 
+                opacity: 0.7;
+            }
+        }
+
+        /* Setup Card */
+        .setup-card {
+            background: white;
+            border-radius: 40px;
+            padding: 4rem;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .setup-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #FF6B35, #F7931E, #FFA500, #FF6B35);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+            border-radius: 40px 40px 0 0;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .setup-icon {
+            text-align: center;
+            font-size: 6rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .setup-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #1A1A1A;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .setup-subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1A1A1A;
+            margin-bottom: 0.8rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1.2rem 1.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #f8f8f8;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-hint {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+
+        /* Member Names Section */
+        .members-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f8f8;
+            border-radius: 15px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.4s ease-out;
+        }
+
+        .members-section.active {
+            max-height: 1000px;
+            opacity: 1;
+            animation: slideDown 0.4s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .member-input-group {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .member-label {
+            font-weight: 600;
+            color: #1A1A1A;
+            min-width: 100px;
+        }
+
+        .member-input {
+            flex: 1;
+            padding: 0.9rem 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .member-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .alert.error {
+            background: #fee;
+            color: #c00;
+            border: 2px solid #fcc;
+        }
+
+        .alert.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 2px solid #bbdefb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .main-container {
+                padding: 2rem 1rem;
+            }
+
+            .setup-card {
+                padding: 2.5rem 2rem;
+            }
+
+            .setup-icon {
+                font-size: 4.5rem;
+            }
+
+            .setup-title {
+                font-size: 2rem;
+            }
+
+            .setup-subtitle {
+                font-size: 1rem;
+            }
+
+            .member-input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .member-label {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .setup-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .btn-primary {
+                padding: 1.2rem;
+                font-size: 1.1rem;
+            }
+
+            .food-particle {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <button class="back-btn" onclick="goBack()">← </button>
+            <div class="logo">🍕 YallaOrder</div>
+        </div>
+        <div class="user-info">
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Animated food particles -->
+        <div class="food-particle particle-1">🍕</div>
+        <div class="food-particle particle-2">🍔</div>
+        <div class="food-particle particle-3">🌮</div>
+        <div class="food-particle particle-4">🍜</div>
+
+        <!-- Setup Card -->
+        <div class="setup-card">
+            <div class="setup-icon">👥</div>
+            <h1 class="setup-title">Group Order Setup</h1>
+            <p class="setup-subtitle">Set up your group order in just a few steps</p>
+
+            <!-- Alert Message -->
+            <div id="alertMessage" class="alert"></div>
+
+            <!-- Setup Form -->
+            <form id="setupForm" onsubmit="handleSetup(event)">
+                <!-- Number of People -->
+                <div class="form-group">
+                    <label class="form-label" for="numPeople">
+                        👥 How many people will be ordering?
+                    </label>
+                    <input 
+                        type="number" 
+                        id="numPeople" 
+                        class="form-input"
+                        min="2"
+                        max="20"
+                        placeholder="Enter number"
+                        required
+                        oninput="updateMemberFields()"
+                    >
+                </div>
+
+                <!-- Member Names Section -->
+                <div id="membersSection" class="members-section">
+                    <div class="form-label" style="margin-bottom: 1rem;">
+                     Enter members' names:
+                    </div>
+                    <div id="memberInputs"></div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-primary" id="submitBtn" disabled>
+                    Start Group Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = sessionStorage.getItem('user');
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const userData = JSON.parse(user);
+            document.getElementById('userName').textContent = userData.first_name || 'Guest';
+        });
+
+        function showAlert(message, type) {
+            const alertEl = document.getElementById('alertMessage');
+            alertEl.textContent = message;
+            alertEl.className = `alert ${type} show`;
+            
+            setTimeout(() => {
+                alertEl.className = 'alert';
+            }, 5000);
+        }
+
+        function updateMemberFields() {
+            const numPeople = parseInt(document.getElementById('numPeople').value);
+            const membersSection = document.getElementById('membersSection');
+            const memberInputs = document.getElementById('memberInputs');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (numPeople >= 2 && numPeople <= 20) {
+                membersSection.classList.add('active');
+                
+                // Generate member input fields
+                memberInputs.innerHTML = '';
+                for (let i = 1; i <= numPeople; i++) {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'member-input-group';
+                    inputGroup.innerHTML = `
+                        <label class="member-label">Person ${i}:</label>
+                        <input 
+                            type="text" 
+                            class="member-input"
+                            id="member${i}"
+                         
+                            required
+                        >
+                    `;
+                    memberInputs.appendChild(inputGroup);
+                }
+
+                submitBtn.disabled = false;
+            } else if (numPeople !== '' && (numPeople < 2 || numPeople > 20)) {
+                membersSection.classList.remove('active');
+                showAlert('Please enter a number', 'error');
+                submitBtn.disabled = true;
+            } else {
+                membersSection.classList.remove('active');
+                submitBtn.disabled = true;
+            }
+        }
+
+        function handleSetup(event) {
+            event.preventDefault();
+            
+            const numPeople = parseInt(document.getElementById('numPeople').value);
+            
+            // Validate number of people
+            if (numPeople < 2 || numPeople > 20) {
+                showAlert('Please enter a valid number of people', 'error');
+                return;
+            }
+
+            // Collect member names
+            const members = [];
+            for (let i = 1; i <= numPeople; i++) {
+                const name = document.getElementById(`member${i}`).value.trim();
+                if (!name) {
+                    showAlert(`Please enter a name for Person ${i}`, 'error');
+                    return;
+                }
+                members.push(name);
+            }
+
+            // Check for duplicate names
+            const uniqueNames = new Set(members.map(n => n.toLowerCase()));
+            if (uniqueNames.size !== members.length) {
+                showAlert('Please use unique names for each person', 'error');
+                return;
+            }
+
+            // Store group order data
+            const groupOrderData = {
+                numPeople: numPeople,
+                members: members,
+                currentPerson: 1,
+                orders: {},
+                createdAt: new Date().toISOString()
+            };
+
+            // Initialize orders object for each member
+            members.forEach((member, index) => {
+                groupOrderData.orders[index + 1] = {
+                    memberName: member,
+                    items: [],
+                    completed: false
+                };
+            });
+
+            sessionStorage.setItem('groupOrderData', JSON.stringify(groupOrderData));
+            sessionStorage.setItem('orderType', 'group');
+
+            // Clear any existing cart
+            sessionStorage.removeItem('cart');
+
+            
+            // Redirect to person selection page
+            setTimeout(() => {
+                window.location.href = 'group-order-person-selection.html';
+            }, 1000);
+        }
+
+        function goBack() {
+            // Clear any partial group order data
+            sessionStorage.removeItem('groupOrderData');
+            sessionStorage.removeItem('orderType');
+            window.location.href = 'order-type-selection.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmed - YallaOrder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #FF6B35;
+            --secondary-orange: #F7931E;
+            --dark-bg: #1A1A1A;
+            --darker-bg: #2C2C2C;
+            --glass-bg: rgba(255,255,255,0.1);
+            --glass-border: rgba(255,255,255,0.1);
+            --text-primary: #fff;
+            --text-secondary: #ccc;
+            --text-muted: #999;
+            --success-green: #10b981;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg), var(--darker-bg));
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .success-animation {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, var(--success-green), #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            animation: scaleIn 0.5s ease-out;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--success-green), #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .success-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .order-number {
+            display: inline-block;
+            background: var(--glass-bg);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            border: 2px solid var(--success-green);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .order-number span {
+            color: var(--success-green);
+        }
+
+        .details-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 107, 53, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .order-items {
+            margin-bottom: 1.5rem;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 0.8rem;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-qty {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--primary-orange);
+            font-size: 1.1rem;
+        }
+
+        .order-summary {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.7rem 0;
+            color: var(--text-secondary);
+        }
+
+        .summary-row.total {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255, 107, 53, 0.3);
+            margin-top: 0.5rem;
+        }
+
+        .summary-row.total .amount {
+            color: var(--primary-orange);
+        }
+
+        .status-timeline {
+            margin-top: 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 50px;
+            width: 2px;
+            height: calc(100% - 30px);
+            background: var(--glass-border);
+        }
+
+        .timeline-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-item.active .timeline-dot {
+            background: var(--success-green);
+            border-color: var(--success-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+            }
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 0.3rem;
+        }
+
+        .timeline-title {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-time {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-orange);
+        }
+
+        .info-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .info-box-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .info-box-content {
+            flex: 1;
+        }
+
+        .info-box-title {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-box-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary-orange);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .success-title {
+                font-size: 2rem;
+            }
+
+            .success-subtitle {
+                font-size: 1rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="brand">YALLAORDER</div>
+    </div>
+</nav>
+
+<div class="container" id="mainContent">
+    <div class="loading">
+        <div class="spinner"></div>
+        <div>Loading your order details...</div>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = "http://localhost:5000";
+
+    function getOrderIdFromURL() {
+        return new URLSearchParams(window.location.search).get("order_id");
+    }
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function formatTime(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    async function loadOrderDetails() {
+        const orderId = getOrderIdFromURL();
+
+        if (!orderId) {
+            window.location.href = 'restaurants.html';
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/orders/${orderId}`);
+            
+            if (!response.ok) {
+                throw new Error('Failed to load order details');
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                renderOrderConfirmation(data.order);
+            } else {
+                throw new Error(data.error || 'Order not found');
+            }
+
+        } catch (err) {
+            console.error('Error loading order:', err);
+            document.getElementById('mainContent').innerHTML = `
+                <div class="details-section">
+                    <div style="text-align: center; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                        <div style="font-size: 1.3rem; margin-bottom: 0.5rem;">Order Not Found</div>
+                        <div style="color: var(--text-muted); margin-bottom: 2rem;">
+                            We couldn't find your order details.
+                        </div>
+                        <a href="restaurants.html" class="btn btn-primary">Back to Restaurants</a>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    function renderOrderConfirmation(order) {
+        const itemsHTML = order.items.map(item => `
+            <div class="order-item">
+                <div class="item-details">
+                    <div class="item-name">${item.item_name}</div>
+                    <div class="item-qty">Quantity: ${item.quantity}</div>
+                </div>
+                <div class="item-price">${item.subtotal.toFixed(2)} EGP</div>
+            </div>
+        `).join('');
+
+        document.getElementById('mainContent').innerHTML = `
+            <div class="success-animation">
+                <div class="success-icon">✓</div>
+                <h1 class="success-title">Order Confirmed!</h1>
+                <p class="success-subtitle">Thank you for your order</p>
+                <div class="order-number">
+                    Order #<span>${order.id}</span>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📦</span>
+                    Order Details
+                </h2>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">👤</div>
+                        <div class="info-content">
+                            <div class="info-label">Customer Name</div>
+                            <div class="info-value">${order.customer_name || 'Not provided'}</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div class="info-content">
+                            <div class="info-label">Phone Number</div>
+                            <div class="info-value">${order.phone}</div>
+                        </div>
+                    </div>
+
+                    ${order.temp_phone ? `
+                        <div class="info-item">
+                            <div class="info-icon">☎️</div>
+                            <div class="info-content">
+                                <div class="info-label">Temporary Contact</div>
+                                <div class="info-value">${order.temp_phone}</div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <div class="info-label">Delivery Address</div>
+                            <div class="info-value">${order.delivery_location}</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">📅</div>
+                        <div class="info-content">
+                            <div class="info-label">Order Date</div>
+                            <div class="info-value">${formatDate(order.created_at)}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🍽️</span>
+                    Order Items
+                </h2>
+
+                <div class="order-items">
+                    ${itemsHTML}
+                </div>
+
+                <div class="order-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>${(order.total - order.delivery_fee - order.tax).toFixed(2)} EGP</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (14%)</span>
+                        <span>${order.tax.toFixed(2)} EGP</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery Fee</span>
+                        <span>${order.delivery_fee.toFixed(2)} EGP</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span class="amount">${order.total.toFixed(2)} EGP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🚚</span>
+                    Order Status
+                </h2>
+
+                <div class="status-timeline">
+                    <div class="timeline-item active">
+                        <div class="timeline-dot">✓</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Order Placed</div>
+                            <div class="timeline-time">${formatTime(order.created_at)}</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot">🍳</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Preparing Your Order</div>
+                            <div class="timeline-time">Waiting for restaurant confirmation</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot">🚴</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Out for Delivery</div>
+                            <div class="timeline-time">On the way to you</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-dot">🏠</div>
+                        <div class="timeline-content">
+                            <div class="timeline-title">Delivered</div>
+                            <div class="timeline-time">Enjoy your meal!</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-icon">💡</div>
+                <div class="info-box-content">
+                    <div class="info-box-title">What's Next?</div>
+                    <div class="info-box-text">
+                        We've notified the restaurant about your order. They will start preparing it shortly. 
+                        You'll receive updates via phone. Estimated delivery time: 30-45 minutes.
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="restaurants.html" class="btn btn-primary">
+                    🍽️ Order Again
+                </a>
+                <button onclick="window.print()" class="btn btn-secondary">
+                    🖨️ Print Receipt
+                </button>
+                <a href="index.html" class="btn btn-secondary">
+                    🏠 Back to Home
+                </a>
+            </div>
+        `;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadOrderDetails();
+    });
+</script>
+
+</body>
+</html>
